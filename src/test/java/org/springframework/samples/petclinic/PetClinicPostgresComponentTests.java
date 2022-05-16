@@ -27,10 +27,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 public class PetClinicPostgresComponentTests {
 
+	public static final String POSTGRES_SERVICE = "postgres";
+	public static final int POSTGRES_SERVICE_PORT = 5432;
 	@Container
 	public static DockerComposeContainer dockerComposeContainer = new DockerComposeContainer<>(
 		new File("src/test/resources/docker-compose.yml"))
-		.withExposedService("postgres", 5432, Wait.forLogMessage(".* database system is ready to accept connections*\\n", 1));
+		.withExposedService(POSTGRES_SERVICE,
+			POSTGRES_SERVICE_PORT,
+			Wait.forLogMessage(".* database system is ready to accept connections*\\n", 1));
 
 	@LocalServerPort
 	int port;
@@ -44,8 +48,8 @@ public class PetClinicPostgresComponentTests {
 	@DynamicPropertySource
 	static void dynamicProperties(DynamicPropertyRegistry registry) {
 		registry.add("POSTGRES_URL", () -> String.format("jdbc:postgresql://%s:%s/petclinic",
-			dockerComposeContainer.getServiceHost("postgres", 5432),
-			dockerComposeContainer.getServicePort("postgres", 5432)));
+			dockerComposeContainer.getServiceHost(POSTGRES_SERVICE, POSTGRES_SERVICE_PORT),
+			dockerComposeContainer.getServicePort(POSTGRES_SERVICE, POSTGRES_SERVICE_PORT)));
 		registry.add("POSTGRES_USER", () -> "petclinic");
 		registry.add("POSTGRES_PASSWORD", () -> "petclinic");
 	}
