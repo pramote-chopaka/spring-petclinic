@@ -33,8 +33,7 @@ public class PetClinicPostgresComponentTests {
 	public static DockerComposeContainer dockerComposeContainer = new DockerComposeContainer<>(
 		new File("src/test/resources/docker-compose.yml"))
 		.withExposedService(POSTGRES_SERVICE,
-			POSTGRES_SERVICE_PORT,
-			Wait.forLogMessage(".* database system is ready to accept connections*\\n", 1));
+			POSTGRES_SERVICE_PORT);
 
 	@LocalServerPort
 	int port;
